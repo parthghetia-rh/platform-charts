@@ -1,0 +1,83 @@
+domain: openshift.api
+
+services:
+  chartVersion: 1.0.0
+
+machinesets:
+  chartVersion: 1.0.0
+  enabled: true
+  helmValues:
+    machineset: 
+      enabled: true
+    machinesets:
+      - name: acs
+        machine_type: Standard_D8s_v3
+ 
+registry:
+  enabled: false
+
+acs:
+  chartVersion: 1.0.0
+  enabled: true
+
+acm:
+  chartVersion: 1.0.0
+  enabled: false
+
+keycloak:
+  chartVersion: 1.0.0
+  enabled: true
+
+gatekeeper:
+  chartVersion: 1.0.0
+  enabled: true
+
+gitops:
+  namespace: openshift-gitops
+  channel: gitops-1.19
+  updater:
+    chartVersion: 1.0.0
+    enabled: true
+
+tekton:
+  chartVersion: 1.0.0
+  enabled: false
+
+sonarqube:
+  chartVersion: ~8
+  enabled: true
+
+devhub:
+  chartVersion: 1.0.22
+  enabled: true
+
+rhtas:
+  chartVersion: 1.0.0
+  enabled: false
+  namespace: rhtas
+
+gitea:
+  chartVersion: 1.0.0
+  enabled: true
+  namespace: gitea
+  size: 20Gi
+
+gitlab:
+  chartVersion: 1.0.0
+  enabled: true
+  namespace: gitlab-system
+
+nexus:
+  chartVersion: 1.0.0
+  enabled: true
+  namespace: nexus
+  size: 100Gi
+
+external_secrets:
+  chartVersion: 1.0.0
+  enabled: true
+  namespace: external-secrets
+
+vault:
+  chartVersion: 0.32.0
+  enabled: true

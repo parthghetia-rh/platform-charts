@@ -1,0 +1,17 @@
+# Default values for the developer_hub chart.
+
+backend:
+  postgres:
+    enabled: true
+  sqlite3:
+    enabled: false
+
+# List of developer usernames (GitLab/Keycloak) for per-user catalog RBAC.
+# Each entry generates a role:default/user-<name> with IS_ENTITY_OWNER
+# so developers see only their own catalog components.
+# Configure per deployment in the orchestrator valuesObject.
+developers:
+  users: []
+  # users:
+  #   - devben
+  #   - devken

@@ -1,0 +1,191 @@
+domain: openshift.io
+
+clusters: []
+
+# Platform
+machinesets:
+  chartVersion: 1.0.0
+
+system_roles:
+  chartVersion: 1.0.0
+
+acm:
+  chartVersion: 1.0.1
+  enabled: false
+  enableCapacity: true
+
+ansiblerunner:
+  chartVersion: 1.0.1
+
+nfd:
+  chartVersion: 1.0.2
+  enabled: false 
+
+nvidiagpu:
+  chartVersion: 1.0.2
+  enabled: false 
+
+# GitOps
+gitops:
+  namespace: openshift-gitops
+  channel: gitops-1.19
+  updater:
+    chartVersion: 1.0.0
+    enabled: false
+
+chains:
+  enabled: false
+
+tekton:
+  chartVersion: 1.0.0
+  enabled: false
+  enableCapacity: false
+
+# Secrets Management
+certmanager:
+  chartVersion: 1.0.1
+  enabled: true
+
+external_secrets:
+  chartVersion: 1.0.0
+  enabled: true
+  namespace: external-secrets
+  connectors:
+    chartVersion: 1.0.0
+  k8sConnector:
+    enabled: true
+
+vault:
+  chartVersion: 0.32.0
+  enabled: true
+  appVersion: 1.21
+  address: "http://vault-service.vault-server.svc.cluster.local:8200"
+
+# Identity Management
+keycloak:
+  chartVersion: 1.0.0
+  enabled: false
+
+usersync:
+  chartVersion: 1.0.0
+
+# Artifacts
+gitea:
+  chartVersion: 1.0.0
+  enabled: true
+  namespace: gitea
+  size: 20Gi
+
+github:
+  enabled: false
+
+gitlab:
+  chartVersion: 1.0.0
+  enabled: true
+  namespace: gitlab-system
+  discoveryEnabled: true
+  runners: 
+    enabled: false
+
+gitlab_repo_creds:
+  chartVersion: 1.0.0
+
+gitlab_runner:
+  chartVersion: 1.0.0
+
+minio:
+  chartVersion: 1.0.0
+  enabled: false
+
+nexus:
+  chartVersion: 1.0.0
+  enabled: true
+  namespace: nexus
+  size: 100Gi
+
+npm:
+  chartVersion: 1.0.0
+  enabled: true
+
+opentelemetry:
+  chartVersion: 1.0.0
+  enabled: false
+
+quay:
+  chartVersion: 1.0.0
+  enabled: false
+  enableCapacity: true
+
+quay_bridge:
+  chartVersion: 1.0.0
+  enabled: false
+
+registry:
+  enabled: false
+
+# Message Brokers
+amq:
+  chartVersion: 1.0.0
+  enabled: false
+  enableCapacity: false
+  count: 1
+  sku: Standard_D8s_v3
+
+# AI Requirements
+authorino:
+  chartVersion: 1.0.2
+  enabled: false
+
+kiali:
+  chartVersion: 1.0.0
+  enabled: false
+
+rhoai:
+  chartVersion: 1.0.2
+  enabled: false
+  enableCapacity: true
+
+serverless:
+  chartVersion: 1.0.0
+  enabled: false
+
+servicemesh:
+  chartVersion: 1.0.3
+  enabled: false
+
+tracing:
+  chartVersion: 1.0.0
+  enabled: false
+
+# Developer Experience
+acs:
+  chartVersion: 1.0.0
+  enabled: false
+  enableCapacity: true
+
+developers:
+  users: []
+
+devhub:
+  chartVersion: 1.0.25
+  enabled: false
+
+devspaces:
+  chartVersion: 1.0.2
+  enabled: false
+  enableCapacity: false
+  count: 1
+  sku: Standard_D8s_v3
+
+gatekeeper:
+  chartVersion: 1.0.0
+  enabled: false
+
+rhtas:
+  chartVersion: 1.0.0
+  namespace: rhtas
+  enabled: false
+
+sonarqube:
+  chartVersion: ~8
+  enabled: false

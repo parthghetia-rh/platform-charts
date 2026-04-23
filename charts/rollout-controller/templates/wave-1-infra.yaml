@@ -1,0 +1,98 @@
+{{- if and (or (not (hasKey .Values "controller")) (ne .Values.controller.name "workshop"))
+           (or .Values.machinesets.enabled 
+               .Values.vault.enabled 
+               .Values.external_secrets.enabled)
+}}
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: infrastructure
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  goTemplate: true
+  goTemplateOptions:
+    - "missingkey=error"
+  generators:
+    - list:
+        elements:
+        {{- if .Values.vault.enabled }}
+          - application: vault-service
+            namespace: vault-server
+            chart:
+              name: vault
+              url: https://helm.releases.hashicorp.com
+              version: "{{ .Values.vault.chartVersion }}"
+            values: |
+              csi:
+                enabled: false
+              global:
+                openshift: true
+              injector:
+                enabled: false
+              server:
+                enabled: true
+                image:
+                  repository: "registry.connect.redhat.com/hashicorp/vault"
+                  tag: "{{ .Values.vault.appVersion }}"
+                dev:
+                  enabled: true
+                  devRootToken: "{{ .Values.settings.vault.token }}"
+                route:
+                  enabled: true
+                  host: "vault.{{ .Values.cluster.domain }}"
+                  tls:
+                    termination: edge
+                resources:
+                  requests:
+                    memory: "256Mi"
+                    cpu: "50m"
+                  limits:
+                    memory: "256Mi"
+                    cpu: "200m"
+        {{- end }}
+        {{- if .Values.external_secrets.enabled }}
+          - application: external-secrets-service
+            namespace: external-secrets
+            chart: 
+              name: external_secrets
+              url: https://na-launch-workshop.github.io/platform-charts
+              version: "{{ .Values.external_secrets.chartVersion }}"
+            values: |
+              namespace: "{{ .Values.external_secrets.namespace }}"
+              gitops:
+                namespace: "{{ .Values.gitops.namespace }}"
+              subscription:
+                channel: stable
+        {{- end }}
+  template:
+    metadata:
+      name: "{{ `{{ .application }}` }}"
+    spec:
+      destination:
+        namespace: "{{ `{{ .namespace }}` }}"
+        server: "https://kubernetes.default.svc"
+      source:
+        chart: "{{ `{{ .chart.name }}` }}"
+        targetRevision: "{{ `{{ .chart.version }}` }}"
+        repoURL: "{{ `{{ .chart.url }}` }}"
+      project: system
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        managedNamespaceMetadata:
+          labels:
+            argocd.argoproj.io/managed-by: "{{ .Values.gitops.namespace }}"
+        syncOptions:
+          - CreateNamespace=true
+          - Validate=false
+  templatePatch: |
+    spec:
+      source:
+        helm:
+        {{ `{{- if (index . "values") }}` }}
+          values: |
+            {{ `{{- .values | nindent 12 }}` }}
+        {{ `{{- end }}` }}
+{{- end }}
